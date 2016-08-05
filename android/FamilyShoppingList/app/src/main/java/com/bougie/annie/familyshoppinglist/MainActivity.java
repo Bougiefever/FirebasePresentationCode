@@ -77,23 +77,6 @@ public class MainActivity extends AppCompatActivity
         // Set default username is anonymous.
         _username = ANONYMOUS;
 
-
-
-
-        _firebaseAuth = FirebaseAuth.getInstance();
-        _firebaseUser = _firebaseAuth.getCurrentUser();
-        if (_firebaseUser == null) {
-            // Not signed in, launch the Sign In activity
-            startActivity(new Intent(this, SigninActivity.class));
-            finish();
-            return;
-        } else {
-            _username = _firebaseUser.getDisplayName();
-            if (_firebaseUser.getPhotoUrl() != null) {
-                _photoUrl = _firebaseUser.getPhotoUrl().toString();
-            }
-        }
-
         _googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)

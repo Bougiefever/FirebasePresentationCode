@@ -57,48 +57,24 @@
   <!-- Firebase initialization -->
 
   <!-- Firebase -->
-  <!-- *******************************************************************************
-       * TODO(DEVELOPER): Paste the initialization snippet by navigating to:
 
-        https://console.firebase.google.com
-
-       and choosing a project you've created.  Then click the red HTML logo at the top
-       right of the page with the caption "Add Firebase to your web app".
-
-       Copy the snippet that appears in place of this comment.
-       *************************************************************************** -->
+  <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCPXuQAPFFIEhYdQYqRgrzYeScfAf5SC0M",
+      authDomain: "mylist-49c8a.firebaseapp.com",
+      databaseURL: "https://mylist-49c8a.firebaseio.com",
+      storageBucket: "mylist-49c8a.appspot.com",
+    };
+    firebase.initializeApp(config);
+  </script>
 
   <script>
 
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        console.log('signed in');
-        var displayName;
-
-        if (user.displayName)
-          displayName = user.displayName;
-        else
-          displayName = user.email;
-        $('#signOut').show();
-
-        $('#userInfo').text("Welcome " + displayName);
-        $('#userInfo').show();
-        $('#shopping_list_panel').show();
-        $('#signin_panel').hide();
-        $('.sign-in-method-section').hide();
-        $('.register-section').hide();
-
-      } else {
-        console.log('not signed in');
-        $('#userInfo').hide();
-        $('#shopping_list_panel').hide();
-        $('#signin_panel').show();
-        $('#signOut').hide();
-      }
-    });
 
     function emailSignin() {
-      var user = firebase.auth().currentUser;
+      var user;
       if (user == null) {
         var email = $('#email').val();
         var password = $('#password').val();
@@ -111,25 +87,12 @@
           return;
         }
 
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
-
-          var errorCode = error.code;
-          var errorMessage = error.message;
-
-          if (errorCode === 'auth/wrong-password') {
-            alert('Wrong password.');
-          } else {
-            alert(errorMessage);
-          }
-          console.log(error);
-          document.getElementById('quickstart-sign-in').disabled = false;
-
-        });
+        //todo: sign in with email and password
       }
     }
 
     function emailRegister() {
-      var currentUser = firebase.auth().currentUser;
+      var currentUser;
 
       if (currentUser == null) {
         var email = $('#registerEmail').val();
@@ -143,74 +106,54 @@
           return;
         }
 
-        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          if (errorCode == 'auth/weak-password') {
-            alert('The password is too weak.');
-          } else {
-            alert(errorMessage);
-          }
-          console.log(error);
-        });
+        //todo: register new user with email and password
       }
-    }
-
-    function emailVerify() {
-      firebase.auth().currentUser.sendEmailVerification().then(function () {
-        alert('Email Verification Sent!');
-      });
     }
 
     function sendPasswordReset() {
       var email = $('#email').val();
-      firebase.auth().sendPasswordResetEmail(email).then(function () {
-        alert('Password Reset Email Sent!');
-      }).catch(function (error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        if (errorCode == 'auth/invalid-email') {
-          alert(errorMessage);
-        } else if (errorCode == 'auth/user-not-found') {
-          alert(errorMessage);
-        }
-        console.log(error);
-      });
+
     }
 
     function googleSignIn() {
-      var user = firebase.auth().currentUser;
+      var user;
       if (user == null) {
-        var provider = new firebase.auth.GoogleAuthProvider();
-        provider.addScope('https://www.googleapis.com/auth/plus.login');
-
-        firebase.auth().signInWithPopup(provider).then(function (result) {
-          var token = result.credential.accessToken;
-          var googleUser = result.user;
-        });
+        //todo: sign in with google
       }
     }
 
     function facebookSignIn() {
-      var user = firebase.auth().currentUser;
-      if (!firebase.auth().currentUser) {
-        var provider = new firebase.auth.FacebookAuthProvider();
-        provider.addScope('user_birthday');
-        firebase.auth().signInWithPopup(provider).then(function (result) {
-          var token = result.credential.accessToken;
-          var user = result.user;
-        }).catch(function (error) {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          var email = error.email;
-          var credential = error.credential;
-          if (errorCode === 'auth/account-exists-with-different-credential') {
-            alert('You have already signed up with a different auth provider for that email.');
-          } else {
-            console.log(error.message);
-          }
-        });
+      var user;
+      if (user == null) {
+        //todo: sign in with Facebook
       }
+    }
+
+    function anonymousSignin() {
+      var user;
+      if (user == null) {
+        //todo: sign in anonymously
+      }
+    }
+
+    function userSignedIn(displayName) {
+      console.log('signed in');
+      $('#signOut').show();
+
+      $('#userInfo').text("Welcome " + displayName);
+      $('#userInfo').show();
+      $('#shopping_list_panel').show();
+      $('#signin_panel').hide();
+      $('.sign-in-method-section').hide();
+      $('.register-section').hide();
+    }
+
+    function userNotSignedIn() {
+      console.log('not signed in');
+      $('#userInfo').hide();
+      $('#shopping_list_panel').hide();
+      $('#signin_panel').show();
+      $('#signOut').hide();
     }
 
     function addItem(item, imageUrl) {
@@ -244,13 +187,9 @@
     }
 
     $(function () {
-      // why won't this work?
-      var user = firebase.auth().currentUser;
-      if (user != null) {
-        // user is always null here
-        $('#shopping_list_panel').show();
-        $('#signin_panel').hide();
-      }
+
+      //todo sign in user
+      userSignedIn('No sign in yet');
 
       $('#signin-selection').click(function () {
         $('.sign-in-method-section').show();
@@ -392,6 +331,11 @@
               <p>Sign in</p>
               <ul class="mdl-list">
 
+                <li>
+                  <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="anonymousSignin">
+                    Sign in Anonymously
+                  </button>
+                </li>
                 <li>
                   <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="emailSignin">
                     Sign in with Email and Password
