@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Starter Kit</title>
+  <title>Family Shopping List</title>
 
   <!-- Disable tap highlight on IE -->
   <meta name="msapplication-tap-highlight" content="no">
@@ -72,6 +72,20 @@
 
   <script>
 
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        var displayName;
+        if (user.isAnonymous)
+          displayName = 'Anonymous'
+        else if (user.displayName)
+          displayName = user.displayName;
+        else
+          displayName = user.email;
+        userSignedIn(displayName);
+      } else {
+        userNotSignedIn();
+      }
+    });
 
     function emailSignin() {
       var user;
@@ -87,7 +101,7 @@
           return;
         }
 
-        //todo: sign in with email and password
+        firebase.auth().signInWithEmailAndPassword(email, password);
       }
     }
 
@@ -106,7 +120,7 @@
           return;
         }
 
-        //todo: register new user with email and password
+        firebase.auth().createUserWithEmailAndPassword(email, password);
       }
     }
 
@@ -132,7 +146,7 @@
     function anonymousSignin() {
       var user;
       if (user == null) {
-        //todo: sign in anonymously
+        firebase.auth().signInAnonymously();
       }
     }
 
@@ -189,8 +203,8 @@
     $(function () {
 
       //todo sign in user
-      userSignedIn('No sign in yet');
-
+      //userSignedIn('No sign in yet');
+      userNotSignedIn();
       $('#signin-selection').click(function () {
         $('.sign-in-method-section').show();
         $('.register-section').hide();

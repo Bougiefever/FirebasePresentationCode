@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "753967517539",
+    "firebase_url": "https://mylist-49c8a.firebaseio.com",
+    "project_id": "mylist-49c8a",
+    "storage_bucket": "mylist-49c8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753967517539:android:7a6b4f7435cf84ec",
+        "android_client_info": {
+          "package_name": "com.bougie.annie.myshoppinglist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753967517539-ppp0u9u4givopuqbvaq1ogakfrrbgle3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bougie.annie.myshoppinglist",
+            "certificate_hash": "0113CF3596C5C2949BCDBA4812E4738E747643EA"
+          }
+        },
+        {
+          "client_id": "753967517539-jej238o321dbicbfueodu32atm92hsk0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIa5jc5OmwpEDaS-UdFn3RKRZaVcQujCc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753967517539-jej238o321dbicbfueodu32atm92hsk0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
