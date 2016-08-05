@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Starter Kit</title>
+
+  <!-- Disable tap highlight on IE -->
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Web Starter Kit">
+  <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Web Starter Kit">
+  <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+  <meta name="msapplication-TileColor" content="#2F3BA2">
+
+  <!-- Color the status bar on mobile devices -->
+  <meta name="theme-color" content="#2F3BA2">
+
+  <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+  <!--
+  <link rel="canonical" href="http://www.example.com/">
+  -->
+  <link rel="author" href="humans.txt"/>
+
+  <!-- Material Design Lite page styles:
+  You can choose other color schemes from the CDN, more info here http://www.getmdl.io/customize/index.html
+  Format: material.color1-color2.min.css, some examples:
+  material.red-teal.min.css
+  material.blue-orange.min.css
+  material.purple-indigo.min.css
+  -->
+  <link rel="stylesheet" href="mdl/material.min.css">
+  <script src="mdl/material.js"></script>
+  <!-- Material Design icons -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <!-- Your styles -->
+  <link rel="stylesheet" href="styles/main.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <!-- Firebase initialization -->
+
+  <!-- Firebase -->
+  <!-- *******************************************************************************
+       * TODO(DEVELOPER): Paste the initialization snippet by navigating to:
+
+        https://console.firebase.google.com
+
+       and choosing a project you've created.  Then click the red HTML logo at the top
+       right of the page with the caption "Add Firebase to your web app".
+
+       Copy the snippet that appears in place of this comment.
+       *************************************************************************** -->
+
+  <script>
+
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        console.log('signed in');
+        var displayName;
+
+        if (user.displayName)
+          displayName = user.displayName;
+        else
+          displayName = user.email;
+        $('#signOut').show();
+
+        $('#userInfo').text("Welcome " + displayName);
+        $('#userInfo').show();
+        $('#shopping_list_panel').show();
+        $('#signin_panel').hide();
+        $('.sign-in-method-section').hide();
+        $('.register-section').hide();
+
+      } else {
+        console.log('not signed in');
+        $('#userInfo').hide();
+        $('#shopping_list_panel').hide();
+        $('#signin_panel').show();
+        $('#signOut').hide();
+      }
+    });
+
+    function emailSignin() {
+      var user = firebase.auth().currentUser;
+      if (user == null) {
+        var email = $('#email').val();
+        var password = $('#password').val();
+        if (email.length < 4) {
+          alert('Please enter an email address.');
+          return;
+        }
+        if (password.length < 4) {
+          alert('Please enter a password.');
+          return;
+        }
+
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+
+          var errorCode = error.code;
+          var errorMessage = error.message;
+
+          if (errorCode === 'auth/wrong-password') {
+            alert('Wrong password.');
+          } else {
+            alert(errorMessage);
+          }
+          console.log(error);
+          document.getElementById('quickstart-sign-in').disabled = false;
+
+        });
+      }
+    }
+
+    function emailRegister() {
+      var currentUser = firebase.auth().currentUser;
+
+      if (currentUser == null) {
+        var email = $('#registerEmail').val();
+        var password = $('#registerPassword').val();
+        if (email.length < 4) {
+          alert('Please enter an email address.');
+          return;
+        }
+        if (password.length < 4) {
+          alert('Please enter a password.');
+          return;
+        }
+
+        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          if (errorCode == 'auth/weak-password') {
+            alert('The password is too weak.');
+          } else {
+            alert(errorMessage);
+          }
+          console.log(error);
+        });
+      }
+    }
+
+    function emailVerify() {
+      firebase.auth().currentUser.sendEmailVerification().then(function () {
+        alert('Email Verification Sent!');
+      });
+    }
+
+    function sendPasswordReset() {
+      var email = $('#email').val();
+      firebase.auth().sendPasswordResetEmail(email).then(function () {
+        alert('Password Reset Email Sent!');
+      }).catch(function (error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        if (errorCode == 'auth/invalid-email') {
+          alert(errorMessage);
+        } else if (errorCode == 'auth/user-not-found') {
+          alert(errorMessage);
+        }
+        console.log(error);
+      });
+    }
+
+    function googleSignIn() {
+      var user = firebase.auth().currentUser;
+      if (user == null) {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/plus.login');
+
+        firebase.auth().signInWithPopup(provider).then(function (result) {
+          var token = result.credential.accessToken;
+          var googleUser = result.user;
+        });
+      }
+    }
+
+    function facebookSignIn() {
+      var user = firebase.auth().currentUser;
+      if (!firebase.auth().currentUser) {
+        var provider = new firebase.auth.FacebookAuthProvider();
+        provider.addScope('user_birthday');
+        firebase.auth().signInWithPopup(provider).then(function (result) {
+          var token = result.credential.accessToken;
+          var user = result.user;
+        }).catch(function (error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          var email = error.email;
+          var credential = error.credential;
+          if (errorCode === 'auth/account-exists-with-different-credential') {
+            alert('You have already signed up with a different auth provider for that email.');
+          } else {
+            console.log(error.message);
+          }
+        });
+      }
+    }
+
+    function addItem(item, imageUrl) {
+      var li = '<li class="mdl-list__item mdl-list__item--two-line">'
+        + '<span class="mdl-list__item-primary-content">'
+        + '<i class="material-icons mdl-list__item-avatar">person</i>'
+        + '<span class="shopping-list-item">' + item + '</span>';
+
+      if (imageUrl) {
+        li += '<span class="mdl-list__item-sub-title">' + imageUrl + '</span>';
+      }
+      li += '</span>';
+
+      if (imageUrl) {
+        li += '<span class="mdl-list__item-secondary-info">'
+          + '<img src="' + imageUrl + '" style="height: 100px; width: 100px;" />'
+          + '</span> ';
+      }
+      li += '<button class="mdl-button mdl-js-button mdl-button&#45;&#45;fab mdl-button&#45;&#45;mini-fab item-done"> <i class="material-icons">done</i> </button></li>';
+      $('.shopping-list').append(li);
+      $('#shoppingItem').val('');
+      if (imageUrl) {
+        console.log(imageUrl);
+      }
+    }
+
+    function removeItem(item) {
+      var selector = 'ul > li > span:contains("' + item + '")';
+      var deletedItem = $(selector);
+      deletedItem.parent().remove();
+    }
+
+    $(function () {
+      // why won't this work?
+      var user = firebase.auth().currentUser;
+      if (user != null) {
+        // user is always null here
+        $('#shopping_list_panel').show();
+        $('#signin_panel').hide();
+      }
+
+      $('#signin-selection').click(function () {
+        $('.sign-in-method-section').show();
+        $('.register-section').hide();
+      });
+
+      $('#register-new-account').click(function () {
+        $('.register-section').show();
+        $('.sign-in-method-section').hide();
+        $('.sign-in-or-register').hide();
+      });
+
+      $('#anonymousSignin').click(function () {
+        anonymousSignin();
+      })
+
+      $('#emailSignin').click(function () {
+        $('.email-sign-in-section').show();
+        $('.sign-in-method-section').hide();
+        $('.sign-in-or-register').hide();
+      });
+
+      $('#googleSignin').click(function () {
+        googleSignIn();
+      });
+
+      $('#facebookSignin').click(function () {
+        facebookSignIn();
+      });
+
+      $('#signin').click(function () {
+        emailSignin();
+      });
+
+      $('#register').click(function () {
+        emailRegister();
+      });
+
+      $('#password-reset').click(function () {
+        sendPasswordReset();
+      });
+
+      $('#verify-email').click(function () {
+        emailVerify();
+      });
+
+      $('#signOut').click(function () {
+        firebase.auth().signOut();
+      });
+
+      $('#addItem').click(function () {
+        $('.add_shopping_item_section').show();
+      });
+
+      $('#itemSave').click(function () {
+        var item = $('#shoppingItem').val();
+        addItem(item);
+        console.log('save ' + item);
+
+        $('.add_shopping_item_section').hide();
+
+      });
+
+      $('ul').on('click', '.item-done', function () {
+        var listItem = $(this).parent().find('span.shopping-list-item').text();
+        console.log('to delete ' + listItem);
+        removeItem(listItem);
+      });
+
+      $('#mediaCapture').on('change', function (e) {
+        uploadFile = e.target.files[0];
+        console.log('in choose image');
+      });
+
+    });
+
+    var uploadFile;
+
+  </script>
+
+</head>
+<body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base" link="white" vlink="white" alink="white">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
+    <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+    </div>
+    <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+      <h3><a href="index.html">Family Shopping List</a></h3>
+    </div>
+    <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+      <div style="width: 100%;">
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect"
+                style="float: right; display: none; color: inherit;" id="signOut">
+          <i class="material-icons">account_circle</i>Sign Out
+        </button>
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect"
+                style="float: right; display: none; color: inherit;" id="anonymousRegister">
+          <i class="material-icons">account_circle</i>Register
+        </button>
+      </div>
+    </div>
+    <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
+      <button class="mdl-button mdl-js-button mdl-button--fab mdl-color--amber-400 mdl-shadow--4dp mdl-js-ripple-effect"
+              id="add">
+        <i class="material-icons">mode_edit</i>
+      </button>
+      <div style="width: 100%; margin: 20px">
+        <div style="float: left; display: none" id="userInfo">User Info</div>
+      </div>
+    </div>
+  </header>
+  <main class="mdl-layout__content">
+    <div class="mdl-layout__tab-panel is-active" id="signin_panel">
+      <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+        <div class="mdl-card mdl-cell mdl-cell--12-col">
+          <div class="mdl-card__supporting-text mdl-grid mdl-grid--no-spacing">
+            <h4 class="mdl-cell mdl-cell--12-col">Sign In</h4>
+            <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone sign-in-or-register">
+              <div class="section__circle-container__circle mdl-color--primary"></div>
+            </div>
+            <div
+              class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone sign-in-or-register">
+              <br/>
+              <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="signin-selection">
+                Sign in to an existing account
+              </button>
+              <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="register-new-account">
+                Register a new account
+              </button>
+            </div>
+            <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone sign-in-method-section"
+                 style="display: none">
+              <div class="section__circle-container__circle mdl-color--primary"></div>
+            </div>
+            <div
+              class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone sign-in-method-section"
+              style="display: none">
+              <br/>
+              <p>Sign in</p>
+              <ul class="mdl-list">
+
+                <li>
+                  <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="emailSignin">
+                    Sign in with Email and Password
+                  </button>
+                </li>
+                <li>
+                  <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="googleSignin">
+                    Sign in with Google
+                  </button>
+                </li>
+                <li>
+                  <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="facebookSignin">
+                    Sign in with Facebook
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone email-sign-in-section"
+                 style="display: none">
+              <div class="section__circle-container__circle mdl-color--primary"></div>
+            </div>
+            <div
+              class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone email-sign-in-section"
+              style="display: none">
+              <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="email"
+                     name="email"
+                     placeholder="Email"/>
+              &nbsp;&nbsp;&nbsp;
+              <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password"
+                     name="password" placeholder="Password"/>
+              <br/><br/>
+              <button class="mdl-button mdl-js-button mdl-button--raised" id="signin" name="signin">Sign In</button>
+              &nbsp;&nbsp;&nbsp;
+              <button class="mdl-button mdl-js-button mdl-button--raised" id="password-reset" name="verify-email">Send
+                Password Reset Email
+              </button>
+
+            </div>
+            <div class="section__circle-container mdl-cell mdl-cell--2-col mdl-cell--1-col-phone register-section"
+                 style="display: none">
+              <div class="section__circle-container__circle mdl-color--primary"></div>
+            </div>
+            <div
+              class="section__text mdl-cell mdl-cell--10-col-desktop mdl-cell--6-col-tablet mdl-cell--3-col-phone register-section"
+              style="display: none">
+              <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="registerEmail"
+                     name="email"
+                     placeholder="Email"/>
+              &nbsp;&nbsp;&nbsp;
+              <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password"
+                     id="registerPassword"
+                     name="password" placeholder="Password"/>
+              <br/><br/>
+              <button class="mdl-button mdl-js-button mdl-js-ripple-effect" id="register">
+                Register
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="mdl-layout__tab-panel is-active" id="shopping_list_panel" style="display: none">
+      <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
+        <header
+          class="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100 mdl-color-text--white">
+          <i class="material-icons">add_shopping_cart</i>
+        </header>
+        <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+          <div class="mdl-card__supporting-text">
+            <h4>Shopping List</h4>
+            <!-- Simple list -->
+            <style>
+              .demo-list-item {
+                width: 300px;
+              }
+            </style>
+
+            <ul class="mdl-list shopping-list">
+
+            </ul>
+            <div class="add_shopping_item_section" style="display: none;">
+              <div class="mdl-dialog__content">
+                <p>
+                  Add your shopping item
+                <form action="#">
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="shoppingItem">
+                    <label class="mdl-textfield__label" for="shoppingItem">Item...</label>
+                  </div>
+                  <!--<input type="file" id="file" name="file"/>-->
+                  <input id="mediaCapture" name="mediaCapture" type="file" accept="image/*,capture=camera">
+                  <button type="button" title="Save item"
+                          class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--amber-400 mdl-color-text--white"
+                          id="itemSave">
+                    Save Item <i class="material-icons">add_shopping_cart</i>
+                  </button>
+                </form>
+                </p>
+              </div>
+            </div>
+            <button
+              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+              id="addItem">
+              Add Item
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+<!-- build:js scripts/main.min.js -->
+<script src="scripts/main.js"></script>
+<!-- endbuild -->
+
+</body>
+</html>

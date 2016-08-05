@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">FamilyShoppingList</string>
+    <string name="fresh_config">Fresh Config</string>
+    <string name="cause_crash">Cause Crash</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="invite_menu_label">Invite</string>
+    <string name="invitation_message">Please join our family shopping list</string>
+    <string name="invitation_cta">Call to shopping</string>
+    <string name="invitation_title">Family Shopping List Invite</string>
+    <string name="title_activity_signin">Sign in</string>
+
+
+</resources>
