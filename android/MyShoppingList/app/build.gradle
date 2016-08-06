@@ -32,6 +32,7 @@ dependencies {
     compile 'com.google.firebase:firebase-database:9.2.1'
     //Firebase remote config
     compile 'com.google.firebase:firebase-config:9.2.1'
+
     //Firebase core including analytics
     compile 'com.google.firebase:firebase-messaging:9.2.1'
     // Firebase ad service

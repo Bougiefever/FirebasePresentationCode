@@ -72,6 +72,20 @@
 
   <script>
 
+    var itemsRef = firebase.database().ref("items");
+
+    itemsRef.on('child_added', function(data) {
+      var val = data.val();
+      console.log('item added: ' + data.key + val.item);
+      addItem(val.item);
+    });
+
+    itemsRef.on('child_removed', function(data) {
+      var val = data.val();
+      removeItem(val.item);
+
+    });
+
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         var displayName;
@@ -87,7 +101,7 @@
       }
     });
 
-    function emailSignin() {
+    function signInWithEmailAndPassword() {
       var user;
       if (user == null) {
         var email = $('#email').val();
@@ -105,7 +119,7 @@
       }
     }
 
-    function emailRegister() {
+    function createUserWithEmailAndPassword() {
       var currentUser;
 
       if (currentUser == null) {
@@ -124,22 +138,27 @@
       }
     }
 
-    function sendPasswordReset() {
+    function sendPasswordResetEmail() {
       var email = $('#email').val();
-
+      firebase.auth().sendPasswordResetEmail(email);
     }
 
     function googleSignIn() {
       var user;
       if (user == null) {
         //todo: sign in with google
+        var provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider).catch(function(error) {
+          console.log(error);
+        });
       }
     }
 
     function facebookSignIn() {
       var user;
       if (user == null) {
-        //todo: sign in with Facebook
+        var provider = new firebase.auth.FacebookAuthProvider();
+        firebase.auth().signInWithPopup(provider);
       }
     }
 
@@ -204,7 +223,7 @@
 
       //todo sign in user
       //userSignedIn('No sign in yet');
-      userNotSignedIn();
+      //userNotSignedIn();
       $('#signin-selection').click(function () {
         $('.sign-in-method-section').show();
         $('.register-section').hide();
@@ -235,15 +254,15 @@
       });
 
       $('#signin').click(function () {
-        emailSignin();
+        signInWithEmailAndPassword();
       });
 
       $('#register').click(function () {
-        emailRegister();
+        createUserWithEmailAndPassword();
       });
 
       $('#password-reset').click(function () {
-        sendPasswordReset();
+        sendPasswordResetEmail();
       });
 
       $('#verify-email').click(function () {
@@ -260,7 +279,10 @@
 
       $('#itemSave').click(function () {
         var item = $('#shoppingItem').val();
-        addItem(item);
+        //addItem(item);
+        var currentUser = firebase.auth().currentUser;
+        var shoppingItem = {name: currentUser.displayName, item: item};
+        itemsRef.push(shoppingItem);
         console.log('save ' + item);
 
         $('.add_shopping_item_section').hide();
@@ -270,14 +292,18 @@
       $('ul').on('click', '.item-done', function () {
         var listItem = $(this).parent().find('span.shopping-list-item').text();
         console.log('to delete ' + listItem);
-        removeItem(listItem);
+        //firebase.database().ref("items")
+        itemsRef.orderByChild("item").equalTo(listItem).once("child_added").then(function(data) {
+          itemsRef.child(data.key).remove();
+        });
+        //removeItem(listItem);
+
       });
 
       $('#mediaCapture').on('change', function (e) {
         uploadFile = e.target.files[0];
         console.log('in choose image');
       });
-
     });
 
     var uploadFile;
