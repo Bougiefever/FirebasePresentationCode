@@ -56,25 +56,34 @@
 
   <!-- Firebase initialization -->
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
   <script>
     // Initialize Firebase
     var config = {
-      apiKey: "AIzaSyAaQsHWK7uV_pFx53LU_SRPRvQ_baK4GJM",
-      authDomain: "tcshoppingitems.firebaseapp.com",
-      databaseURL: "https://tcshoppingitems.firebaseio.com",
-      storageBucket: "tcshoppingitems.appspot.com",
+      apiKey: "AIzaSyBgJNMxd-OJ4ImM5CflSsEjJGtBE8uMFlM",
+      authDomain: "tcsample-b2e00.firebaseapp.com",
+      databaseURL: "https://tcsample-b2e00.firebaseio.com",
+      storageBucket: "tcsample-b2e00.appspot.com",
     };
     firebase.initializeApp(config);
   </script>
 
+
   <script>
+
     var itemsRef = firebase.database().ref("items");
 
     itemsRef.on('child_added', function(data) {
       var val = data.val();
       console.log('item added: ' + data.key + val.item);
       addItem(val.item);
+    });
+
+    itemsRef.on('child_removed', function(data) {
+      var val = data.val();
+      removeItem(val.item);
+
     });
 
     firebase.auth().onAuthStateChanged(function(user) {
@@ -93,7 +102,7 @@
     });
 
     function signInWithEmailAndPassword() {
-      var user; //todo set current user
+      var user;
       if (user == null) {
         var email = $('#email').val();
         var password = $('#password').val();
@@ -105,12 +114,13 @@
           alert('Please enter a password.');
           return;
         }
-        //todo sign in
+
+        firebase.auth().signInWithEmailAndPassword(email, password);
       }
     }
 
     function createUserWithEmailAndPassword() {
-      var currentUser; //todo set current user
+      var currentUser = firebase.auth().currentUser;
 
       if (currentUser == null) {
         var email = $('#registerEmail').val();
@@ -123,14 +133,14 @@
           alert('Please enter a password.');
           return;
         }
-        //todo create user
 
+        firebase.auth().createUserWithEmailAndPassword(email, password);
       }
     }
 
     function sendPasswordResetEmail() {
       var email = $('#email').val();
-      //todo send password reset email
+      firebase.auth().sendPasswordResetEmail(email);
     }
 
     function googleSignIn() {
@@ -145,18 +155,22 @@
     }
 
     function facebookSignIn() {
-      var user; //todo get current user
+      var user;
       if (user == null) {
-        //todo: sign in with facebook
-
+        var provider = new firebase.auth.FacebookAuthProvider();
+        firebase.auth().signInWithPopup(provider);
       }
     }
 
     function anonymousSignin() {
-      var user; //todo get current user
+      var user;
       if (user == null) {
-        //todo sign in
+        firebase.auth().signInAnonymously();
       }
+    }
+
+    function emailVerify() {
+      //todo send verification email
     }
 
     function userSignedIn(displayName) {
@@ -269,7 +283,11 @@
 
       $('#itemSave').click(function () {
         var item = $('#shoppingItem').val();
-        addItem(item);
+        //addItem(item);
+        var currentUser = firebase.auth().currentUser;
+        var shoppingItem = {name: currentUser.displayName, item: item};
+        itemsRef.push(shoppingItem);
+        console.log('save ' + item);
 
         $('.add_shopping_item_section').hide();
 
@@ -278,7 +296,11 @@
       $('ul').on('click', '.item-done', function () {
         var listItem = $(this).parent().find('span.shopping-list-item').text();
         console.log('to delete ' + listItem);
-        removeItem(listItem);
+        //firebase.database().ref("items")
+        itemsRef.orderByChild("item").equalTo(listItem).once("child_added").then(function(data) {
+          itemsRef.child(data.key).remove();
+        });
+        //removeItem(listItem);
 
       });
 
@@ -448,7 +470,7 @@
                     <label class="mdl-textfield__label" for="shoppingItem">Item...</label>
                   </div>
                   <!--<input type="file" id="file" name="file"/>-->
-                  <input id="mediaCapture" name="mediaCapture" type="file" accept="image/*,capture=camera" style="display: none">
+                  <input id="mediaCapture" name="mediaCapture" type="file" accept="image/*,capture=camera">
                   <button type="button" title="Save item"
                           class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--amber-400 mdl-color-text--white"
                           id="itemSave">

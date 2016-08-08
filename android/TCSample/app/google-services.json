@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "270078795350",
+    "firebase_url": "https://tcshoppingitems.firebaseio.com",
+    "project_id": "tcshoppingitems",
+    "storage_bucket": "tcshoppingitems.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270078795350:android:6f0f75c452e94e92",
+        "android_client_info": {
+          "package_name": "com.bougie.annie.tcsample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270078795350-69qa1ajba6cohbeenapfcqj9fd9kl4m4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bougie.annie.tcsample",
+            "certificate_hash": "0113CF3596C5C2949BCDBA4812E4738E747643EA"
+          }
+        },
+        {
+          "client_id": "270078795350-9o86ethvv54rfjg1dro56b6gci38rvqq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFyxkVkTG9nBhgByaYy4aodNSO0wrkYME"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "270078795350-9o86ethvv54rfjg1dro56b6gci38rvqq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
