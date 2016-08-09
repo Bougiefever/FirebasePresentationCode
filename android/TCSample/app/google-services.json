@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "270078795350",
-    "firebase_url": "https://tcshoppingitems.firebaseio.com",
-    "project_id": "tcshoppingitems",
-    "storage_bucket": "tcshoppingitems.appspot.com"
+    "project_number": "211031680786",
+    "firebase_url": "https://tcproject-8c498.firebaseio.com",
+    "project_id": "tcproject-8c498",
+    "storage_bucket": "tcproject-8c498.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:270078795350:android:6f0f75c452e94e92",
+        "mobilesdk_app_id": "1:211031680786:android:6f0f75c452e94e92",
         "android_client_info": {
           "package_name": "com.bougie.annie.tcsample"
         }
       },
       "oauth_client": [
         {
-          "client_id": "270078795350-69qa1ajba6cohbeenapfcqj9fd9kl4m4.apps.googleusercontent.com",
+          "client_id": "211031680786-mv9gtm7gndktq6rh5vcjuqm723meo1tk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.bougie.annie.tcsample",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "270078795350-9o86ethvv54rfjg1dro56b6gci38rvqq.apps.googleusercontent.com",
+          "client_id": "211031680786-f9mug8ch01pufkod4jjvfi0lfaiu8fp5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDFyxkVkTG9nBhgByaYy4aodNSO0wrkYME"
+          "current_key": "AIzaSyBRtE10qA4rZPaWVa8vdurbnuBgoyVb65c"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "270078795350-9o86ethvv54rfjg1dro56b6gci38rvqq.apps.googleusercontent.com",
+              "client_id": "211031680786-f9mug8ch01pufkod4jjvfi0lfaiu8fp5.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

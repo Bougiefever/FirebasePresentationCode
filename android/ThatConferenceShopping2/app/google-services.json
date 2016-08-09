@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "321538970837",
+    "firebase_url": "https://thatconferenceshopping2.firebaseio.com",
+    "project_id": "thatconferenceshopping2",
+    "storage_bucket": "thatconferenceshopping2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321538970837:android:944dfa68fab65f0f",
+        "android_client_info": {
+          "package_name": "com.anniebougie.thatconferenceshopping2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "321538970837-hn5a10eh20athbge2ktrm2111ma0od2p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anniebougie.thatconferenceshopping2",
+            "certificate_hash": "0113CF3596C5C2949BCDBA4812E4738E747643EA"
+          }
+        },
+        {
+          "client_id": "321538970837-kpegsqdcrlmbo7s885hif3qnakp8k7em.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBo6Ib6HA5OlNm8beJgB1P6ANzkC6NfYD4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "321538970837-kpegsqdcrlmbo7s885hif3qnakp8k7em.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
