@@ -57,8 +57,44 @@
   <!-- Firebase initialization -->
 
 
+  <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyC7S-dWQ3KifwGL02YUXBW4Zvq35sIiFFw",
+      authDomain: "thatconferenceshopping2.firebaseapp.com",
+      databaseURL: "https://thatconferenceshopping2.firebaseio.com",
+      storageBucket: "thatconferenceshopping2.appspot.com",
+    };
+    firebase.initializeApp(config);
+  </script>
+
 
   <script>
+
+    var itemsRef = firebase.database().ref("items");
+    itemsRef.on("child_added", function(data) {
+      addItem(data.val().item);
+    });
+
+    itemsRef.on("child_removed", function(data) {
+      removeItem(data.val().item);
+    });
+
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        var displayName;
+        if (user.isAnonymous)
+          displayName = 'Anonymous'
+        else if (user.displayName)
+          displayName = user.displayName;
+        else
+          displayName = user.email;
+        userSignedIn(displayName);
+      } else {
+        userNotSignedIn();
+      }
+    });
 
     function signInWithEmailAndPassword() {
       var user; //todo set current user
@@ -73,7 +109,7 @@
           alert('Please enter a password.');
           return;
         }
-        //todo sign in
+        firebase.auth().signInWithEmailAndPassword(email, password);
       }
     }
 
@@ -91,14 +127,13 @@
           alert('Please enter a password.');
           return;
         }
-        //todo create user
-
+        firebase.auth().createUserWithEmailAndPassword(email, password);
       }
     }
 
     function sendPasswordResetEmail() {
       var email = $('#email').val();
-      //todo send password reset email
+      firebase.auth().sendPasswordResetEmail(email);
     }
 
     function googleSignIn() {
@@ -112,7 +147,8 @@
     function facebookSignIn() {
       var user; //todo get current user
       if (user == null) {
-        //todo: sign in with facebook
+        var provider = new firebase.auth.FacebookAuthProvider();
+        firebase.auth().signInWithPopup(provider);
 
       }
     }
@@ -120,7 +156,7 @@
     function anonymousSignin() {
       var user; //todo get current user
       if (user == null) {
-        //todo sign in
+        firebase.auth().signInAnonymously();
       }
     }
 
@@ -177,7 +213,7 @@
     $(function () {
 
       //todo sign in user
-      userSignedIn('No sign in yet');
+      //userSignedIn('No sign in yet');
       //userNotSignedIn();
       $('#signin-selection').click(function () {
         $('.sign-in-method-section').show();
@@ -234,8 +270,9 @@
 
       $('#itemSave').click(function () {
         var item = $('#shoppingItem').val();
-        addItem(item);
-
+        //addItem(item);
+        var user = firebase.auth().currentUser;
+        itemsRef.push({name: user.displayName, item: item});
         $('.add_shopping_item_section').hide();
 
       });
@@ -243,7 +280,12 @@
       $('ul').on('click', '.item-done', function () {
         var listItem = $(this).parent().find('span.shopping-list-item').text();
         console.log('to delete ' + listItem);
-        removeItem(listItem);
+        //removeItem(listItem);
+        itemsRef.orderByChild("item").equalTo(listItem).once("child_added").then(function(data) {
+          var key = data.key;
+          console.log(key);
+          itemsRef.child(key).remove();
+        });
 
       });
 
