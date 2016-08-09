@@ -56,41 +56,9 @@
 
   <!-- Firebase initialization -->
 
-  <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
-  <script>
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyAaQsHWK7uV_pFx53LU_SRPRvQ_baK4GJM",
-      authDomain: "tcshoppingitems.firebaseapp.com",
-      databaseURL: "https://tcshoppingitems.firebaseio.com",
-      storageBucket: "tcshoppingitems.appspot.com",
-    };
-    firebase.initializeApp(config);
-  </script>
+
 
   <script>
-    var itemsRef = firebase.database().ref("items");
-
-    itemsRef.on('child_added', function(data) {
-      var val = data.val();
-      console.log('item added: ' + data.key + val.item);
-      addItem(val.item);
-    });
-
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        var displayName;
-        if (user.isAnonymous)
-          displayName = 'Anonymous'
-        else if (user.displayName)
-          displayName = user.displayName;
-        else
-          displayName = user.email;
-        userSignedIn(displayName);
-      } else {
-        userNotSignedIn();
-      }
-    });
 
     function signInWithEmailAndPassword() {
       var user; //todo set current user
@@ -134,13 +102,10 @@
     }
 
     function googleSignIn() {
-      var user = firebase.auth().currentUser;
+      var user; //todo get current user
       if (user == null) {
         //todo: sign in with google
-        var provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider).catch(function(error) {
-          console.log(error);
-        });
+
       }
     }
 
@@ -212,7 +177,7 @@
     $(function () {
 
       //todo sign in user
-      //userSignedIn('No sign in yet');
+      userSignedIn('No sign in yet');
       //userNotSignedIn();
       $('#signin-selection').click(function () {
         $('.sign-in-method-section').show();

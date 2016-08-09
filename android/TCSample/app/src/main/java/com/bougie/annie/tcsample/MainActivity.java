@@ -77,28 +77,12 @@ public class MainActivity extends AppCompatActivity
         // Set default username is anonymous.
         _username = ANONYMOUS;
 
-        _firebaseAuth = FirebaseAuth.getInstance();
-        _firebaseUser = _firebaseAuth.getCurrentUser();
-
-        if (_firebaseUser == null) {
-            // Not signed in, launch the Sign In activity
-            startActivity(new Intent(this, SigninActivity.class));
-            finish();
-            return;
-        } else {
-            _username = _firebaseUser.getDisplayName();
-            if (_firebaseUser.getPhotoUrl() != null) {
-                _photoUrl = _firebaseUser.getPhotoUrl().toString();
-            }
-        }
 
         _googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
                 .build();
 
-        _firebaseDatabase = FirebaseDatabase.getInstance();
-        _firebaseDatabaseReference = _firebaseDatabase.getReference();
         _childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -145,28 +129,8 @@ public class MainActivity extends AppCompatActivity
                 adb.setNegativeButton("No", null);
                 adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        //removeShoppingListItem(itemText);
-                        _firebaseDatabaseReference.child("items")
-                                .orderByChild("item")
-                                .equalTo(itemText)
-                                .addListenerForSingleValueEvent(
-                                        new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                                    String key = child.getKey();
-                                                    DatabaseReference removeRef
-                                                            = _firebaseDatabase.getReference("items/" + key);
-                                                    removeRef.removeValue();
-                                                }
-                                            }
+                        removeShoppingListItem(itemText);
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        }
-                                );
                     }
                 });
                 adb.show();
@@ -179,21 +143,13 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 String newItem = _inputItem.getText().toString();
-                //addNewShoppingListItem(newItem);
-                ShoppingItem shoppingItem = new ShoppingItem(_firebaseUser.getDisplayName(), newItem);
-                _firebaseDatabaseReference.child("items").push().setValue(shoppingItem);
+                addNewShoppingListItem(newItem);
+
                 _inputItem.setText("");
             }
         });
 
-        _firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings settings = new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(BuildConfig.DEBUG)
-                .build();
-        _firebaseRemoteConfig.setConfigSettings(settings);
-        _firebaseRemoteConfig.setDefaults(R.xml.remote_config_defaults);
-        _number_of_items = (int) _firebaseRemoteConfig.getLong("number_of_items");
-        listenForShoppingItemsChanges();
+
     }
 
     private void addNewShoppingListItem(String item) {
@@ -265,10 +221,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void listenForShoppingItemsChanges() {
-        _firebaseDatabaseReference.child("items")
-                .limitToFirst(_number_of_items)
-                .addChildEventListener(
-                _childEventListener
-        );
+
     }
 }
